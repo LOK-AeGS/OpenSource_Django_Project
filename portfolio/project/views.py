@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from .models import AllProject, DetailProject, Reivew, User
 from django.template import loader
+from django.db.models import Avg
 #    return HttpResponse("detail page")
 # Create your views here.
 # 🔹 프로젝트 리스트
@@ -107,3 +108,17 @@ def edit_project(request, project_id):
         'detail': detail
     }
     return render(request, 'project_edit.html', context)
+
+def my_projects(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login_page')
+
+    # Annotate로 평균 별점 계산, 정렬까지 함께 처리
+    projects = AllProject.objects.filter(
+        projectUserName__userId=user_id
+    ).annotate(
+        average_star=Avg('reivew__projectReviewStar')  # 역참조로 평균
+    ).order_by('-average_star', '-projectDate')  # 평균 → 최신순
+
+    return render(request, 'project_my_project.html', {'my_projects': projects})

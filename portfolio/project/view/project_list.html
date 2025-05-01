@@ -61,7 +61,12 @@
       <h1>📋 프로젝트 리스트</h1>
       <div class="button-group">
         <a href="{% url 'project_create' %}" class="create-button">➕ 프로젝트 등록</a>
-        <a href="{% url 'login_page' %}" class="login-button">🔐 로그인</a>
+    
+        {% if request.session.user_id %}
+          <a href="{% url 'my_projects' %}" class="login-button">📁 내 프로젝트</a>
+        {% else %}
+          <a href="{% url 'login_page' %}" class="login-button">🔐 로그인</a>
+        {% endif %}
       </div>
     </div>
 

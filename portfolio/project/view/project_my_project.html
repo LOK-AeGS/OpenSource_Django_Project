@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내 프로젝트</title>
+  <link rel="stylesheet" href="{% static 'project_my_projects.css' %}">
+  <script src="{% static 'project_my_projects.js' %}" defer></script>
+  <style>
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      padding: 8px 16px;
+      background-color: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 🔙 상단 돌아가기 버튼 -->
+    <div class="top-bar">
+      <h1>📁 내 프로젝트 목록</h1>
+      <a href="{% url 'project_list' %}" class="back-button">🏠 전체 프로젝트 보기</a>
+    </div>
+
+    {% if my_projects %}
+      <ul class="project-list">
+        {% for project in my_projects %}
+          <li class="project-item">
+            <h2>{{ project.projectName }}</h2>
+            <p>작성일: {{ project.projectDate|date:"Y-m-d H:i" }}</p>
+            <p>⭐ 평균 별점: {{ project.average_star|floatformat:1 }}</p>
+            <a href="{% url 'project_detail' project.id %}">🔍 상세 보기</a>
+            <a href="{% url 'project_edit' project.id %}" class="edit-button">✏️ 수정</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>등록된 프로젝트가 없습니다.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
