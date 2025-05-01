@@ -24,6 +24,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("project/list", project_view.show_list,name = 'project_list'),
     path("project/<int:project_id>",project_view.show_detail,name = 'project_detail'),
+    path('project/create/', project_view.create_project, name='project_create'),
+    path('project/<int:project_id>/edit/', project_view.edit_project, name='project_edit'),
     path("login/page",login_view.show_page, name = 'login_page'),
     path("login/singup",login_view.signup, name = 'login_signup')
 ]

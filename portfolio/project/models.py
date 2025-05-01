@@ -1,10 +1,12 @@
 from django.db import models
+from login.models import User
 
 # Create your models here.
 class AllProject(models.Model):
     projectName = models.CharField(max_length=200)
     projectDate = models.DateTimeField('date published')
-
+    projectUserName = models.ForeignKey(User,to_field='userId',on_delete=models.CASCADE, null=True)
+    
 class DetailProject(models.Model):
     projectId = models.ForeignKey(AllProject, on_delete=models.CASCADE)
     projectContent = models.CharField(max_length=1000)

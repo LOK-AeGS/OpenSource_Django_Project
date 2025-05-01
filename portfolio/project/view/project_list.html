@@ -8,11 +8,18 @@
   <style>
     .top-bar {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
     }
 
-    .login-button {
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .login-button,
+    .create-button {
       padding: 8px 16px;
       background-color: #007bff;
       color: white;
@@ -20,20 +27,43 @@
       border-radius: 5px;
     }
 
+    .create-button {
+      background-color: #17a2b8;
+    }
+
+    .create-button:hover {
+      background-color: #138496;
+    }
+
     .login-button:hover {
       background-color: #0056b3;
+    }
+
+    .edit-button {
+      padding: 6px 10px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+
+    .edit-button:hover {
+      background-color: #218838;
     }
   </style>
 </head>
 <body>
   <div class="container">
 
-    <!-- ✅ 로그인 버튼 추가 -->
+    <!-- ✅ 상단 버튼: 로그인 & 프로젝트 등록 -->
     <div class="top-bar">
-      <a href="{% url 'login_page'}" class="login-button">🔐 로그인</a>
+      <h1>📋 프로젝트 리스트</h1>
+      <div class="button-group">
+        <a href="{% url 'project_create' %}" class="create-button">➕ 프로젝트 등록</a>
+        <a href="{% url 'login_page' %}" class="login-button">🔐 로그인</a>
+      </div>
     </div>
-
-    <h1>📋 프로젝트 리스트</h1>
 
     {% if project_list %}
       <ul class="project-list">
@@ -42,14 +72,18 @@
             <h2>{{ project.projectName }}</h2>
             <p>ID: {{ project.id }}</p>
             <p>Date: {{ project.projectDate|date:"Y-m-d H:i" }}</p>
+
             <a href="{% url 'project_detail' project.id %}">🔍 상세 보기</a>
+
+            {% if request.session.user_id == project.projectUserName.userId %}
+              <a href="{% url 'project_edit' project.id %}" class="edit-button">✏️ 수정</a>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
     {% else %}
       <p>등록된 프로젝트가 없습니다.</p>
     {% endif %}
-
   </div>
 </body>
 </html>
