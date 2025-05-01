@@ -24,39 +24,46 @@
 
     <hr>
 
-    <!-- ⭐ 별점 폼 -->
-      {% if username %}
+    <!-- ⭐ 별점 및 리뷰 작성 -->
+    <section class="review-form-section">
+      <h2>📝 리뷰 작성</h2>
+      {% if role == "user" %}
         <form method="POST">
           {% csrf_token %}
-          <label for="rating">별점</label>
+          <label for="rating">별점 (1~5):</label>
           <select name="rating" required>
             {% for i in "12345" %}
-            <option value="{{ i }}">{{ i }}점</option>
+              <option value="{{ i }}">{{ i }}점</option>
             {% endfor %}
           </select>
 
-          <label for="content">리뷰 내용</label>
-          <textarea name="content" required></textarea>
+          <label for="content">리뷰 내용:</label>
+          <textarea name="content" rows="4" required></textarea>
 
           <button type="submit">리뷰 작성</button>
         </form>
-      {% else %}
-        <p>리뷰를 작성하려면 <a href="{% url 'login_page' %}">로그인</a>해주세요.</p>
-      {% endif %}
 
+        {% if submitted_rating %}
+          <p class="submitted-result">✅ {{ submitted_rating }}점을 제출했습니다.</p>
+        {% endif %}
+
+      {% elif role == "admin" %}
+        <p>🔒 관리자는 리뷰를 작성할 수 없습니다.</p>
+      {% else %}
+        <p>리뷰를 작성하려면 <a href="{% url 'login_page' %}">로그인</a>하세요.</p>
+      {% endif %}
+    </section>
 
     <hr>
 
-    <!-- 💬 사용자 리뷰 출력 -->
-    <div class="review-section">
-      <h2>💬 사용자 리뷰</h2>
-
+    <!-- 💬 리뷰 목록 -->
+    <section class="review-list-section">
+      <h2>💬 리뷰 목록</h2>
       {% if project_review_list %}
         <ul class="review-list">
           {% for review in project_review_list %}
             <li class="review-item">
-              <strong>{{ review.userName }}</strong>
-              <span> | ⭐ {{ review.projectReviewStar }}점</span>
+              <strong>{{ review.userName }}</strong> | ⭐ {{ review.projectReviewStar }}점
               <p>{{ review.projectReviewContent }}</p>
             </li>
           {% endfor %}
@@ -64,7 +71,7 @@
       {% else %}
         <p>등록된 리뷰가 없습니다.</p>
       {% endif %}
-    </div>
+    </section>
 
   </div>
 </body>

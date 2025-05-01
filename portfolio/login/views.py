@@ -11,18 +11,32 @@ def show_page(request):
         userid = request.POST.get('userid')
         password = request.POST.get('password')
 
+        # 1️⃣ 일반 사용자 체크
         try:
             user = User.objects.get(userId=userid)
-            if user.userPassword == password:  # 실제로는 check_password() 사용 권장
+            if user.userPassword == password:
                 request.session['user_id'] = user.userId
                 request.session['username'] = user.userName
-                return redirect('project_list')  # 로그인 후 이동
+                request.session['role'] = 'user'  # ✅ 역할 저장
+                return redirect('project_list')
             else:
                 error = "비밀번호가 일치하지 않습니다."
         except User.DoesNotExist:
-            error = "존재하지 않는 사용자입니다."
+            # 2️⃣ 관리자 사용자 체크
+            try:
+                admin = AdminUser.objects.get(userId=userid)
+                if admin.userPassword == password:
+                    request.session['user_id'] = admin.userId
+                    request.session['username'] = admin.userName
+                    request.session['role'] = 'admin'  # ✅ 역할 저장
+                    return redirect('project_list')  # 필요 시 관리자 전용 페이지로 변경
+                else:
+                    error = "비밀번호가 일치하지 않습니다."
+            except AdminUser.DoesNotExist:
+                error = "존재하지 않는 사용자입니다."
 
     return render(request, "login_page.html", {'error': error})
+
 # ✅ 회원가입 처리
 def signup(request):
     error = None
@@ -38,12 +52,11 @@ def signup(request):
         elif User.objects.filter(userId=userid).exists():
             error = "이미 존재하는 아이디입니다."
         else:
-            # 사용자 생성
-            user = User.objects.create(
+            User.objects.create(
                 userId=userid,
                 userPassword=pw1,
-                userName=name  # 만약 모델에 name 필드가 있다면
+                userName=name
             )
-            return redirect('login_page')  # 로그인 페이지로 이동
+            return redirect('login_page')
 
     return render(request, "singup.html", {'error': error})

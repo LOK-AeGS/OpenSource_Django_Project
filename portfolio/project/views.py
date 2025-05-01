@@ -13,29 +13,27 @@ def show_list(request):
     }
     return render(request, 'project_list.html', context)  # loader.get_template 생략 가능
 
-
-# 🔹 프로젝트 상세
 def show_detail(request, project_id):
     submitted_rating = None
-    username = request.session.get('username')  # ✅ 로그인 사용자 정보 불러오기
+    username = request.session.get('username')
+    role = request.session.get('role')  # ✅ 사용자 권한 확인 ('admin' or 'user')
 
-    # 프로젝트 객체
+    # 프로젝트 정보 가져오기
     project = get_object_or_404(AllProject, id=project_id)
 
-    # 상세 내용
     try:
         project_detail = DetailProject.objects.get(projectId=project)
     except DetailProject.DoesNotExist:
         project_detail = None
 
-    # 리뷰 리스트
+    # 해당 프로젝트에 대한 모든 리뷰
     project_reviews = Reivew.objects.filter(projectId=project)
 
     if request.method == 'POST':
         submitted_rating = request.POST.get('rating')
-        review_content = request.POST.get('content')  # ✅ 리뷰 내용도 함께 저장
+        review_content = request.POST.get('content')
 
-        if username:
+        if username and role == 'user':  # ✅ 일반 사용자만 리뷰 작성 가능
             Reivew.objects.create(
                 projectId=project,
                 projectReviewStar=submitted_rating,
@@ -43,13 +41,14 @@ def show_detail(request, project_id):
                 userName=username
             )
         else:
-            submitted_rating = None  # 비회원의 제출 무효화
+            submitted_rating = None  # 관리자거나 로그인 안 된 경우는 무시
 
     context = {
         'project_id': project_id,
         'submitted_rating': submitted_rating,
         'project_detail_list': project_detail,
         'project_review_list': project_reviews,
-        'username': username  # ✅ 템플릿에서 조건 분기용
+        'username': username,
+        'role': role  # ✅ 템플릿에서도 구분 가능
     }
     return render(request, 'project_detail.html', context)
