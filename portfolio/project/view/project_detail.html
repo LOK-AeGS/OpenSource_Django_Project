@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>프로젝트 상세 페이지</title>
+  <link rel="stylesheet" href="{% static 'project_detail.css' %}">
+</head>
+<body>
+  <div class="container">
+
+    <h1>🔍 프로젝트 상세 페이지</h1>
+    <p><strong>프로젝트 ID:</strong> {{ project_id }}</p>
+
+    <!-- ✅ 프로젝트 설명 -->
+    {% if project_detail_list %}
+      <div class="project-content">
+        <h2>📄 프로젝트 내용</h2>
+        <p>{{ project_detail_list.projectContent }}</p>
+      </div>
+    {% else %}
+      <p>❗ 프로젝트 상세 내용이 없습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- ⭐ 별점 폼 -->
+      {% if username %}
+        <form method="POST">
+          {% csrf_token %}
+          <label for="rating">별점</label>
+          <select name="rating" required>
+            {% for i in "12345" %}
+            <option value="{{ i }}">{{ i }}점</option>
+            {% endfor %}
+          </select>
+
+          <label for="content">리뷰 내용</label>
+          <textarea name="content" required></textarea>
+
+          <button type="submit">리뷰 작성</button>
+        </form>
+      {% else %}
+        <p>리뷰를 작성하려면 <a href="{% url 'login_page' %}">로그인</a>해주세요.</p>
+      {% endif %}
+
+
+    <hr>
+
+    <!-- 💬 사용자 리뷰 출력 -->
+    <div class="review-section">
+      <h2>💬 사용자 리뷰</h2>
+
+      {% if project_review_list %}
+        <ul class="review-list">
+          {% for review in project_review_list %}
+            <li class="review-item">
+              <strong>{{ review.userName }}</strong>
+              <span> | ⭐ {{ review.projectReviewStar }}점</span>
+              <p>{{ review.projectReviewContent }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>등록된 리뷰가 없습니다.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

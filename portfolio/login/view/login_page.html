@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <script src="{% static 'js/login.js' %}" defer></script>
+</head>
+<body>
+  <div class="login-container">
+    <h2>🔐 로그인</h2>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <label for="userid">아이디</label>
+      <input type="text" name="userid" id="userid" required>
+
+      <label for="password">비밀번호</label>
+      <input type="password" name="password" id="password" required>
+
+      <button type="submit">로그인</button>
+    </form>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <p class="signup-link">계정이 없으신가요? 👉 <a href="{% url 'login_signup' %}">회원가입</a></p>
+  </div>
+</body>
+</html>
