@@ -50,4 +50,14 @@ body {
     font-size: 0.9rem;
     color: #999;
   }
-  
+  .logout-button {
+    padding: 8px 16px;
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+  }
+  .logout-button:hover {
+    background-color: #c82333;
+  }

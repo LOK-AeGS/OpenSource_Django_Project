@@ -6,7 +6,7 @@ from django.template import loader
 from django.db.models import Avg
 #    return HttpResponse("detail page")
 # Create your views here.
-# 🔹 프로젝트 리스트
+# 프로젝트 리스트
 def show_list(request):
     project_list = AllProject.objects.all().order_by('-projectName')
 
@@ -18,7 +18,7 @@ def show_list(request):
 def show_detail(request, project_id):
     submitted_rating = None
     userId = request.session.get('username')
-    role = request.session.get('role')  # ✅ 사용자 권한 확인 ('admin' or 'user')
+    role = request.session.get('role')  # 사용자 권한 확인 ('admin' or 'user')
 
     # 프로젝트 정보 가져오기
     project = get_object_or_404(AllProject, id=project_id)
@@ -122,3 +122,4 @@ def my_projects(request):
     ).order_by('-average_star', '-projectDate')  # 평균 → 최신순
 
     return render(request, 'project_my_project.html', {'my_projects': projects})
+

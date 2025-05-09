@@ -53,10 +53,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "portfolio.urls"
 
+STATIC_URL = '/static/'
+
+# 여기에 project/view 폴더를 추가
+STATICFILES_DIRS = [
+        # 프로젝트 쪽 view 폴더
+    BASE_DIR / 'project' / 'view',
+    # 로그인(signup) 쪽 view 폴더
+    BASE_DIR / 'login' / 'view',
+]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
+            BASE_DIR / 'project' / 'view',
             os.path.join(BASE_DIR, 'project', 'view'),
             os.path.join(BASE_DIR, 'login', 'view')
         ],

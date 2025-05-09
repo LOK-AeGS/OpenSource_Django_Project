@@ -63,10 +63,11 @@
         <a href="{% url 'project_create' %}" class="create-button">➕ 프로젝트 등록</a>
     
         {% if request.session.user_id %}
-          <a href="{% url 'my_projects' %}" class="login-button">📁 내 프로젝트</a>
-        {% else %}
-          <a href="{% url 'login_page' %}" class="login-button">🔐 로그인</a>
-        {% endif %}
+        <a href="{% url 'my_projects' %}" class="login-button">📁 내 프로젝트</a>
+        <a href="{% url 'logout' %}" class="logout-button">🚪 로그아웃</a>
+      {% else %}
+        <a href="{% url 'login_page' %}" class="login-button">🔐 로그인</a>
+      {% endif %}
       </div>
     </div>
 

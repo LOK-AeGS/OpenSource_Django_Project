@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.urls import path
 from project import views as project_view
 from login import views as login_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,9 +28,17 @@ urlpatterns = [
     path("project/<int:project_id>",project_view.show_detail,name = 'project_detail'),
     path('project/create/', project_view.create_project, name='project_create'),
     path('project/<int:project_id>/edit/', project_view.edit_project, name='project_edit'),
-    path('project/mine/', project_view.my_projects, name='my_projects'),
+    path('project/mine/', project_view.my_projects, name='my_projects'),   
 
 
+
+    path('project/logout/', login_view.logout_view, name='logout'),
     path("login/page",login_view.show_page, name = 'login_page'),
     path("login/singup",login_view.signup, name = 'login_signup')
 ]
+# DEBUG=True 개발용으로, /static/ URL → project/view/ 폴더
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.BASE_DIR / 'project' / 'view'
+    )
